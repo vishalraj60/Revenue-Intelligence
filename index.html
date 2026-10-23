@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Revenue Intelligence Inbox — SpendNest</title>
+  <meta name="description" content="Revenue Intelligence Inbox: analyse, route and manage sales conversations from SpendNest's call and meeting activity." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar -->
+    <nav id="sidebar" class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-brand">
+        <svg class="brand-icon" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+          <rect width="28" height="28" rx="6" fill="#2563EB"/>
+          <path d="M7 14h14M14 7v14" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="14" cy="14" r="4" fill="#fff" fill-opacity="0.2"/>
+        </svg>
+        <div class="brand-text">
+          <span class="brand-name">Revenue Intel</span>
+          <span class="brand-sub">SpendNest</span>
+        </div>
+      </div>
+
+      <ul class="nav-list" role="list">
+        <li><a href="#overview" class="nav-link active" id="nav-overview" role="menuitem">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="2" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="2" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="11" y="11" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>
+          Overview
+        </a></li>
+        <li><a href="#inbox" class="nav-link" id="nav-inbox" role="menuitem">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 5h16M2 10h16M2 15h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Intelligence Inbox
+          <span class="nav-badge" id="inbox-badge">–</span>
+        </a></li>
+        <li><a href="#detail" class="nav-link" id="nav-detail" role="menuitem">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5"/><path d="M10 7v4M10 13h.01" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Conversation Details
+        </a></li>
+        <li><a href="#exports" class="nav-link" id="nav-exports" role="menuitem">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13V4m0 9l-3-3m3 3l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 17h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Outputs &amp; Exports
+        </a></li>
+        <li><a href="#import" class="nav-link" id="nav-import" role="menuitem">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 7v9m0-9l-3 3m3-3l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 3h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Import History
+        </a></li>
+        <li><a href="#methodology" class="nav-link" id="nav-methodology" role="menuitem">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 6h12M4 10h8M4 14h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Methodology
+        </a></li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-status" id="db-status">
+          <span class="status-dot"></span>
+          <span class="status-text">IndexedDB ready</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" id="btn-reset" title="Reset all application data">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10a6 6 0 1 1 1.5 3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 14l2-2 2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Reset
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main content -->
+    <main id="main-content" class="main-content">
+
+      <!-- ── OVERVIEW ── -->
+      <section id="section-overview" class="page-section active" aria-label="Overview">
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">Overview</h1>
+            <p class="page-subtitle">Activity dashboard for 21 August 2026 · Asia/Kolkata</p>
+          </div>
+          <div class="header-actions">
+            <div class="filter-row">
+              <select id="ov-filter-person" class="filter-select" aria-label="Filter by person">
+                <option value="">All people</option>
+              </select>
+              <select id="ov-filter-type" class="filter-select" aria-label="Filter by source type">
+                <option value="">All types</option>
+                <option value="call">Calls</option>
+                <option value="meeting">Meetings</option>
+              </select>
+            </div>
+          </div>
+        </header>
+
+        <!-- Empty state when no data imported -->
+        <div class="card empty-state-card" id="overview-empty-state" style="display:none">
+          <div class="empty-state-content">
+            <div class="empty-icon-wrap">
+              <svg viewBox="0 0 48 48" fill="none" class="empty-icon"><rect x="6" y="8" width="36" height="32" rx="4" stroke="currentColor" stroke-width="2"/><path d="M6 18h36M18 18v22" stroke="currentColor" stroke-width="2"/></svg>
+            </div>
+            <h2>No Dataset Imported Yet</h2>
+            <p class="empty-desc">The SpendNest Revenue Intelligence Inbox requires conversation records to generate activity metrics, route analysis, and the executive manager brief.</p>
+            <div class="empty-status-pill">
+              <span class="status-dot"></span> <span id="empty-db-status">IndexedDB Connected &amp; Ready (0 records stored)</span>
+            </div>
+            <div class="button-row justify-center mt-16">
+              <button class="btn btn-primary btn-sm" id="btn-empty-import-initial">Import Initial Dataset (01_initial.json)</button>
+              <button class="btn btn-outline btn-sm" id="btn-empty-browse">Browse Custom JSON…</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric cards -->
+        <div class="metrics-grid" id="metrics-grid"></div>
+
+        <!-- Validation panel -->
+        <div class="card validation-card" id="validation-panel" style="display:none">
+          <div class="card-header">
+            <h2 class="card-title">Dataset Validation</h2>
+            <span class="badge badge-info" id="validation-status">–</span>
+          </div>
+          <div class="validation-rows" id="validation-rows"></div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="charts-row">
+          <div class="card chart-card">
+            <div class="card-header">
+              <h2 class="card-title">Activity by person</h2>
+              <span class="card-hint">Calls and meetings</span>
+            </div>
+            <div class="chart-container" id="chart-person"></div>
+          </div>
+          <div class="card chart-card">
+            <div class="card-header">
+              <h2 class="card-title">Routing distribution</h2>
+              <span class="card-hint">Post-analysis</span>
+            </div>
+            <div class="chart-container" id="chart-routing"></div>
+          </div>
+        </div>
+
+        <!-- Manager brief -->
+        <div class="card" id="manager-brief-card">
+          <div class="card-header">
+            <h2 class="card-title">Manager Brief — 21 August 2026</h2>
+            <div class="card-header-actions">
+              <span class="badge badge-info">Pre-generated · disclosed</span>
+            </div>
+          </div>
+          <div id="manager-brief-content" class="brief-content"></div>
+        </div>
+
+        <!-- Drill-down modal overlay -->
+        <div id="metric-drill-overlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Metric drill-down">
+          <div class="overlay-panel">
+            <div class="overlay-header">
+              <h2 id="drill-title">Records</h2>
+              <button class="btn-close" id="drill-close" aria-label="Close">×</button>
+            </div>
+            <div id="drill-content" class="drill-content"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── INTELLIGENCE INBOX ── -->
+      <section id="section-inbox" class="page-section" aria-label="Intelligence Inbox" hidden>
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">Intelligence Inbox</h1>
+            <p class="page-subtitle" id="inbox-count-label">Loading…</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-primary btn-sm" id="inbox-btn-import">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" style="width:14px;height:14px;margin-right:4px"><path d="M10 7v9m0-9l-3 3m3-3l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 3h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              Import Data
+            </button>
+          </div>
+        </header>
+
+        <!-- Empty state when no data imported -->
+        <div class="card empty-state-card" id="inbox-empty-state" style="display:none">
+          <div class="empty-state-content">
+            <div class="empty-icon-wrap">
+              <svg viewBox="0 0 48 48" fill="none" class="empty-icon"><path d="M6 12h36M6 24h36M6 36h24" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <h2>Inbox is Empty</h2>
+            <p class="empty-desc">No sales calls or meetings have been ingested yet. Ingest your dataset to browse, search, and review conversations.</p>
+            <button class="btn btn-primary btn-sm" id="btn-inbox-import-cta">Import Initial Dataset</button>
+          </div>
+        </div>
+
+        <div class="filter-bar card" id="inbox-filter-bar">
+          <div class="filter-row flex-wrap">
+            <input type="search" id="inbox-search" class="filter-input" placeholder="Search records, people, outcomes…" aria-label="Search inbox" />
+            <select id="inbox-type" class="filter-select" aria-label="Source type"><option value="">All types</option><option value="call">Calls</option><option value="meeting">Meetings</option></select>
+            <select id="inbox-person" class="filter-select" aria-label="Person filter"><option value="">All people</option></select>
+            <select id="inbox-status" class="filter-select" aria-label="Review status"><option value="">All statuses</option></select>
+            <select id="inbox-route" class="filter-select" aria-label="Route filter"><option value="">All routes</option></select>
+            <select id="inbox-transcript" class="filter-select" aria-label="Transcript filter"><option value="">All transcripts</option><option value="has">Has transcript</option><option value="missing">Missing transcript</option></select>
+            <select id="inbox-override" class="filter-select" aria-label="Override filter"><option value="">All records</option><option value="manual">Manual overrides only</option><option value="stale">Stale analysis</option></select>
+            <button class="btn btn-ghost btn-sm" id="inbox-clear-filters">Clear filters</button>
+          </div>
+        </div>
+
+        <div class="card table-card">
+          <div class="table-wrapper" role="region" aria-label="Inbox records">
+            <table class="data-table" id="inbox-table" aria-live="polite">
+              <thead>
+                <tr>
+                  <th class="col-ref sortable" data-col="record_ref" aria-sort="none">Ref</th>
+                  <th class="col-type sortable" data-col="source_type" aria-sort="none">Type</th>
+                  <th class="col-date sortable" data-col="started_at" aria-sort="none">Date / Time</th>
+                  <th class="col-person sortable" data-col="person" aria-sort="none">Person</th>
+                  <th class="col-transcript sortable" data-col="has_transcript" aria-sort="none">Transcript</th>
+                  <th class="col-route sortable" data-col="route" aria-sort="none">Route</th>
+                  <th class="col-status sortable" data-col="review_status" aria-sort="none">Status</th>
+                  <th class="col-override">Override</th>
+                  <th class="col-stale">Stale</th>
+                </tr>
+              </thead>
+              <tbody id="inbox-tbody"></tbody>
+            </table>
+          </div>
+          <div class="table-footer" id="inbox-footer">
+            <span id="inbox-showing">0 records</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── CONVERSATION DETAIL ── -->
+      <section id="section-detail" class="page-section" aria-label="Conversation details" hidden>
+        <header class="page-header">
+          <button class="btn btn-ghost btn-sm" id="detail-back">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12 4l-6 6 6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to Inbox
+          </button>
+          <div class="detail-header-main" id="detail-header-main"></div>
+        </header>
+        <div id="detail-content" class="detail-layout"></div>
+      </section>
+
+      <!-- ── EXPORTS ── -->
+      <section id="section-exports" class="page-section" aria-label="Outputs and exports" hidden>
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">Outputs &amp; Exports</h1>
+            <p class="page-subtitle">Generate a ZIP archive of all analysis outputs</p>
+          </div>
+        </header>
+        <div class="export-layout">
+          <div class="card export-card">
+            <div class="card-header">
+              <h2 class="card-title">Export Package</h2>
+            </div>
+            <div class="export-description">
+              <p>The ZIP archive contains:</p>
+              <ul class="export-list">
+                <li><code>manifest.json</code> — machine-readable index of all outputs</li>
+                <li><code>manifest.csv</code> — spreadsheet-friendly manifest</li>
+                <li><code>manager_brief/manager_brief_2026-08-21.md</code></li>
+                <li><code>conversations/calls/&lt;id&gt;/analysis.json + .md</code></li>
+                <li><code>conversations/meetings/&lt;id&gt;/analysis.json + .md</code></li>
+                <li><code>reports/routing_summary.csv</code></li>
+                <li><code>reports/intake_review.csv</code></li>
+                <li><code>reports/findings.md</code></li>
+              </ul>
+              <p class="note">Only records with usable transcript content receive full analysis files. Records without transcript content are listed in the manifest with their intake/review state but receive no fabricated analysis.</p>
+            </div>
+            <div class="export-actions">
+              <button class="btn btn-primary" id="btn-export-zip">
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 13V4m0 9l-3-3m3 3l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 17h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Download ZIP
+              </button>
+              <span id="export-status" class="export-status"></span>
+            </div>
+          </div>
+          <div class="card export-preview-card">
+            <div class="card-header">
+              <h2 class="card-title">Export Preview</h2>
+            </div>
+            <div id="export-preview" class="export-preview-content">
+              <p class="text-muted">Generate a ZIP to see the file tree preview.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── IMPORT HISTORY ── -->
+      <section id="section-import" class="page-section" aria-label="Import history" hidden>
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">Import &amp; Data Management</h1>
+            <p class="page-subtitle">Inspect, preview, and ingest JSON datasets into IndexedDB</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-outline btn-sm btn-danger" id="btn-reset-workspace-top">Reset Workspace</button>
+          </div>
+        </header>
+
+        <div class="import-layout">
+          <div class="card import-upload-card">
+            <div class="card-header">
+              <h2 class="card-title">Import JSON File</h2>
+              <span class="card-hint">Validation &amp; Preview before write</span>
+            </div>
+            
+            <div class="import-drop-zone" id="import-drop-zone" tabindex="0" role="button" aria-label="Drop or click to upload JSON file">
+              <svg viewBox="0 0 48 48" fill="none" aria-hidden="true" class="drop-icon">
+                <rect x="4" y="4" width="40" height="40" rx="8" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3"/>
+                <path d="M24 30V18m0-6l-6 6m6-6l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14 36h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <p class="drop-text">Drag &amp; drop a JSON file here or <button class="link-btn" id="import-browse-btn" type="button">browse</button></p>
+              <p class="drop-hint">Accepts standard JSON dataset (e.g. <code>01_initial.json</code>, <code>02_update.json</code>)</p>
+              <input type="file" id="import-file-input" accept=".json" class="hidden" aria-hidden="true" />
+            </div>
+
+            <!-- Preset Datasets -->
+            <div class="preset-datasets-card">
+              <p class="section-label">Supplied Assignment Datasets</p>
+              <p class="preset-help">Load datasets through the schema validation &amp; pre-import preview:</p>
+              <div class="button-row mt-8">
+                <button class="btn btn-primary btn-sm" id="btn-demo-initial">Import Initial Dataset (01_initial.json)</button>
+                <button class="btn btn-outline btn-sm" id="btn-demo-update">Import Update Dataset (02_update.json)</button>
+              </div>
+            </div>
+
+            <div id="import-result" class="import-result hidden"></div>
+
+            <div class="workspace-reset-box">
+              <p class="section-label">Reset Workspace</p>
+              <p class="reset-help">Clears all imported records, analyses, manual route corrections, and audit logs.</p>
+              <button class="btn btn-outline btn-sm btn-danger mt-8" id="btn-demo-reset">Reset Workspace</button>
+            </div>
+          </div>
+
+          <div class="card import-history-card">
+            <div class="card-header">
+              <h2 class="card-title">Import History Log</h2>
+              <span class="card-hint">Batches ingested into IndexedDB</span>
+            </div>
+            <div id="import-history-list" class="import-history-list">
+              <p class="text-muted" style="padding:16px">No imports yet.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit trail -->
+        <div class="card audit-card">
+          <div class="card-header">
+            <h2 class="card-title">Audit History</h2>
+            <span class="card-hint">Record-level change events</span>
+          </div>
+          <div id="audit-list" class="audit-list">
+            <p class="text-muted">No audit events yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── METHODOLOGY ── -->
+      <section id="section-methodology" class="page-section" aria-label="Methodology" hidden>
+        <header class="page-header">
+          <div>
+            <h1 class="page-title">Methodology</h1>
+            <p class="page-subtitle">Definitions, routing rules, limitations and analysis provenance</p>
+          </div>
+        </header>
+        <div id="methodology-content" class="methodology-content"></div>
+      </section>
+
+    </main><!-- /main-content -->
+  </div><!-- /app -->
+
+  <!-- Pre-import preview & confirmation modal -->
+  <div id="modal-import-preview" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Dataset Import Preview and Confirmation">
+    <div class="overlay-panel import-preview-panel">
+      <div class="overlay-header">
+        <h2 id="import-preview-title">Preview Dataset Import</h2>
+        <button class="btn-close" id="import-preview-close" aria-label="Close">×</button>
+      </div>
+      <div class="drill-content" id="import-preview-body"></div>
+      <div class="overlay-footer">
+        <button class="btn btn-ghost btn-sm" id="import-preview-cancel">Cancel</button>
+        <button class="btn btn-primary btn-sm" id="import-preview-confirm">Confirm &amp; Apply Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toast-container" class="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- JSZip for export (local offline bundle) -->
+  <script src="js/vendor/jszip.js"></script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
